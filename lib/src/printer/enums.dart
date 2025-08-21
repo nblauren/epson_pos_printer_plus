@@ -1,0 +1,185 @@
+// ignore_for_file: constant_identifier_names
+
+enum Epos2Series {
+  EPOS2_TM_M10(0),
+  EPOS2_TM_M30(1),
+  EPOS2_TM_P20(2),
+  EPOS2_TM_P60(3),
+  EPOS2_TM_P60II(4),
+  EPOS2_TM_P80(5),
+  EPOS2_TM_T20(6),
+  EPOS2_TM_T60(7),
+  EPOS2_TM_T70(8),
+  EPOS2_TM_T81(9),
+  EPOS2_TM_T82(10),
+  EPOS2_TM_T83(11),
+  EPOS2_TM_T88(12),
+  EPOS2_TM_T90(13),
+  EPOS2_TM_T90KP(14),
+  EPOS2_TM_U220(15),
+  EPOS2_TM_U330(16),
+  EPOS2_TM_L90(17),
+  EPOS2_TM_H6000(18),
+  EPOS2_TM_T83III(19),
+  EPOS2_TM_T100(20),
+  EPOS2_TM_M30II(21),
+  EPOS2_TS_100(22),
+  EPOS2_TM_M50(23),
+  EPOS2_TM_T88VII(24),
+  EPOS2_TM_L90LFC(25),
+  EPOS2_TM_L100(26),
+  EPOS2_TM_P20II(27),
+  EPOS2_TM_P80II(28),
+  EPOS2_TM_M30III(29),
+  EPOS2_TM_M50II(30),
+  EPOS2_TM_M55(31),
+  EPOS2_TM_U220II(32),
+  TM_M10(0),
+  TM_M30(1),
+  TM_P20(2),
+  TM_P60(3),
+  TM_P60II(4),
+  TM_P80(5),
+  TM_T20(6),
+  TM_T60(7),
+  TM_T70(8),
+  TM_T81(9),
+  TM_T82(10),
+  TM_T83(11),
+  TM_T88(12),
+  TM_T90(13),
+  TM_T90KP(14),
+  TM_U220(15),
+  TM_U330(16),
+  TM_L90(17),
+  TM_H6000(18),
+  TM_T83III(19),
+  TM_T100(20),
+  TM_M30II(22),
+  TS_100(23),
+  TM_M50(24),
+  TM_T88VII(25),
+  TM_L90LFC(26),
+  EU_M30(27),
+  TM_L100(28),
+  TM_P20II(30),
+  TM_P80II(31),
+  TM_M30III(32),
+  TM_M50II(33),
+  TM_M55(34),
+  TM_U220II(35);
+
+  const Epos2Series(this.value);
+  final num value;
+}
+
+enum Epos2Model {
+  ANK,
+  CHINESE,
+  TAIWAN,
+  KOREAN,
+  THAI,
+  SOUTH_ASIA,
+}
+
+enum Epos2Alignment {
+  DEFAULT,
+  LEFT,
+  CENTER,
+  RIGHT,
+}
+
+enum Epos2Cut {
+  DEFAULT,
+  CUT_FEED,
+  CUT_NO_FEED,
+  CUT_RESERVE,
+}
+
+enum Epos2Language {
+  DEFAULT,
+  EN,
+  JA,
+  ZH_CN,
+  ZH_TW,
+  KO,
+  TH,
+  VI,
+  MULTI,
+}
+
+enum Epos2Font {
+  DEFAULT,
+  A,
+  B,
+  C,
+  D,
+  E,
+}
+
+enum Epos2Color {
+  DEFAULT,
+  TRANSPARENT,
+  COLOR_1,
+  COLOR_2,
+  COLOR_3,
+  COLOR_4,
+}
+
+enum Epos2StatusEvent {
+  ONLINE,
+  OFFLINE,
+  POWER_OFF,
+  COVER_CLOSE,
+  COVER_OPEN,
+  PAPER_OK,
+  PAPER_NEAR_END,
+  PAPER_EMPTY,
+  DRAWER_HIGH,
+  DRAWER_LOW,
+  BATTERY_ENOUGH,
+  BATTERY_EMPTY,
+  INSERTION_WAIT_SLIP,
+  INSERTION_WAIT_VALIDATION,
+  INSERTION_WAIT_MICR,
+  INSERTION_WAIT_NONE,
+  REMOVAL_WAIT_PAPER,
+  REMOVAL_WAIT_NONE,
+  SLIP_PAPER_OK,
+  SLIP_PAPER_EMPTY,
+  AUTO_RECOVER_ERROR,
+  AUTO_RECOVER_OK,
+  UNRECOVERABLE_ERROR,
+}
+
+enum Epos2StatusPaper {
+  OK,
+  NEAR_END,
+  EMPTY,
+}
+
+enum Epos2PrinterError {
+  NO_ERR,
+  MECHANICAL_ERR,
+  AUTOCUTTER_ERR,
+  UNRECOVER_ERR,
+  AUTORECOVER_ERR,
+}
+
+enum Epos2AutoRecoverError {
+  HEAD_OVERHEAT,
+  MOTOR_OVERHEAT,
+  BATTERY_OVERHEAT,
+  WRONG_PAPER,
+  COVER_OPEN,
+}
+
+enum Epos2RemovalWaiting {
+  NONE,
+  PAPER,
+}
+
+enum Epos2UnrecoverError {
+  HIGH_VOLTAGE_ERR,
+  LOW_VOLTAGE_ERR,
+}

@@ -1,0 +1,9 @@
+// ignore_for_file: constant_identifier_names
+
+enum Epos2PortType {
+  EPOS2_PORTTYPE_ALL,
+  EPOS2_PORTTYPE_TCP,
+  EPOS2_PORTTYPE_BLUETOOTH,
+  EPOS2_PORTTYPE_USB,
+  EPOS2_PORTTYPE_BLUETOOTH_LE,
+}
