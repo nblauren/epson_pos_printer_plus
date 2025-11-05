@@ -1,19 +1,49 @@
+// web/src/discovery_manager_web.dart
 import 'dart:async';
-import 'dart:html' as html;
 import 'package:flutter/services.dart';
+import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
-class DiscoveryManagerWeb implements EventChannel.StreamHandler {
+class DiscoveryManagerWeb implements StreamHandler {
   StreamController<Map<String, dynamic>>? _controller;
 
   @override
-  Stream<dynamic>? onListen(Object? arguments, EventChannel.EventSink? events) {
-    _controller = StreamController<Map<String, dynamic>>();
+  Stream<dynamic>? onListen(Object? arguments, EventSink? events) {
+    // Close any existing controller
+    _controller?.close();
 
-    // In the web context, most likely you'll need to use a web service or API endpoint
-    // to discover printers, as direct device discovery isn't typically available in browsers
+    _controller = StreamController<Map<String, dynamic>>.broadcast();
 
-    // Example simulated discovery:
-    _simulateDiscovery(events);
+    // IMPORTANT: The Epson ePOS SDK for JavaScript does NOT support
+    // automatic printer discovery like the iOS/Android SDKs do.
+    //
+    // Web applications must connect to printers using known IP addresses.
+    // Users should manually configure printer IP addresses in their application.
+    //
+    // This is a fundamental limitation of web browsers - they cannot
+    // perform network device discovery for security reasons.
+
+    // Immediately send an error to inform the user
+    Future.microtask(() {
+      events?.addError(
+        PlatformException(
+          code: 'NOT_SUPPORTED',
+          message: 'Printer discovery is not supported on web platform. '
+              'The Epson ePOS SDK for JavaScript requires a known printer IP address. '
+              'Please connect directly using printer.connect(target: "192.168.1.100") '
+              'where the target is your printer\'s IP address.',
+          details: {
+            'platform': 'web',
+            'reason': 'Browser security restrictions prevent automatic network device discovery',
+            'solution': 'Use direct IP connection: printer.connect(target: "PRINTER_IP")',
+            'port_default': '8008',
+            'port_ssl': '8043',
+          },
+        ),
+      );
+
+      // Close the stream after sending the error
+      _controller?.close();
+    });
 
     return _controller?.stream;
   }
@@ -22,17 +52,5 @@ class DiscoveryManagerWeb implements EventChannel.StreamHandler {
   void onCancel(Object? arguments) {
     _controller?.close();
     _controller = null;
-  }
-
-  // Simulated discovery for web (you would replace this with actual implementation)
-  void _simulateDiscovery(EventChannel.EventSink? events) {
-    // In a real implementation, you might connect to a server API
-    // that knows about available printers
-
-    // For now, just inform users that web discovery is limited
-    events?.error(
-        'WebLimitedFunctionality',
-        'Printer discovery in web browsers is limited. Consider using alternative methods for printer selection.',
-        null);
   }
 }
