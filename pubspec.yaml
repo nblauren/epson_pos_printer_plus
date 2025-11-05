@@ -16,6 +16,7 @@ dependencies:
   freezed_annotation: ^3.0.0
   json_annotation: ^4.9.0
   logging: ^1.0.2
+  js: ^0.6.7
 
 dev_dependencies:
   flutter_test:
@@ -33,3 +34,8 @@ flutter:
         pluginClass: EpsonPosPrinterPlugin
       ios:
         pluginClass: EpsonPosPrinterPlugin
+      web:
+        pluginClass: EpsonPosPrinterWeb
+        fileName: epson_pos_printer_web.dart
+  assets:
+    - web/sdk/epos-2.27.0.js
