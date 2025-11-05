@@ -1,156 +1,168 @@
 // web/src/epson_epos_interop.dart
-// JavaScript interop layer for Epson ePOS SDK
+// JavaScript interop layer for Epson ePOS SDK (Corrected to match real API)
 
 @JS()
 library epson_epos_interop;
 
 import 'package:js/js.dart';
 
-/// Epson ePOS Printer class
-@JS('epson.ePOSDevice.Printer')
+/// Main ePOSDevice class - used to connect to printers and create device objects
+/// Usage: var device = new epson.ePOSDevice();
+@JS('epson.ePOSDevice')
+class EpsonEPOSDevice {
+  external factory EpsonEPOSDevice();
+
+  /// Connect to a printer
+  /// @param ip - IP address of the printer
+  /// @param port - Port number (usually 8008 or 8043 for SSL)
+  /// @param callback - Callback function(data) where data is "OK" or error code
+  external void connect(String ip, String port, Function callback);
+
+  /// Disconnect from the printer
+  external void disconnect();
+
+  /// Create a device object (printer, display, etc.)
+  /// @param deviceId - Unique identifier for the device
+  /// @param deviceType - Type constant (DEVICE_TYPE_PRINTER, etc.)
+  /// @param options - Configuration object {crypto: bool, buffer: bool}
+  /// @param callback - Callback function(deviceObject, returnCode)
+  external void createDevice(
+    String deviceId,
+    int deviceType,
+    DeviceOptions options,
+    Function callback,
+  );
+
+  /// Delete a device object
+  /// @param deviceObject - The device object to delete
+  /// @param callback - Callback function(errorCode)
+  external void deleteDevice(Object deviceObject, Function callback);
+
+  // Device type constants
+  external static int get DEVICE_TYPE_PRINTER;
+  external static int get DEVICE_TYPE_HYBRID_PRINTER;
+  external static int get DEVICE_TYPE_DISPLAY;
+  external static int get DEVICE_TYPE_KEYBOARD;
+  external static int get DEVICE_TYPE_SCANNER;
+  external static int get DEVICE_TYPE_SERIAL;
+
+  // For getting constants at runtime
+  static const int DEVICE_TYPE_PRINTER_VALUE = 1;
+  static const int DEVICE_TYPE_HYBRID_PRINTER_VALUE = 2;
+  static const int DEVICE_TYPE_DISPLAY_VALUE = 3;
+}
+
+/// Device creation options
+@JS()
+@anonymous
+class DeviceOptions {
+  external factory DeviceOptions({
+    bool? crypto,
+    bool? buffer,
+  });
+
+  external bool? get crypto;
+  external bool? get buffer;
+}
+
+/// Printer object (returned from createDevice)
+/// This is actually an ePOSBuilder/ePOSPrint object
+@JS()
+@anonymous
 class EpsonPrinter {
-  external factory EpsonPrinter();
+  // Timeout for operations (milliseconds)
+  external int get timeout;
+  external set timeout(int value);
 
-  external int timeout;
-  external Function? onreceive;
-  external Function? onerror;
-  external Function? onstatuschange;
+  // Event handlers
+  external Function? get onreceive;
+  external set onreceive(Function? callback);
 
-  // Printer connection
-  external int connect(String address, int mode, [Function? callback]);
-  external int disconnect();
+  external Function? get onerror;
+  external set onerror(Function? callback);
 
-  // Print commands
-  external int send();
-  external void clearCommandBuffer();
+  external Function? get onstatuschange;
+  external set onstatuschange(Function? callback);
 
-  // Text commands
+  // Print command methods
   external void addText(String data);
+  external void addTextLang(String lang);
   external void addTextAlign(int align);
-  external void addTextSize(int width, int height);
-  external void addTextStyle(bool reverse, bool ul, bool em, int? color);
-  external void addTextFont(int font);
-  external void addTextSmooth(bool smooth);
-  external void addTextLang(int lang);
   external void addTextRotate(bool rotate);
   external void addTextLineSpace(int linespc);
-  external void addHPosition(int x);
+  external void addTextFont(String font);
+  external void addTextSmooth(bool smooth);
+  external void addTextSize(int width, int height);
+  external void addTextStyle(bool reverse, bool ul, bool em, String color);
+  external void addTextPosition(int x);
 
   // Feed commands
   external void addFeedUnit(int unit);
   external void addFeedLine(int line);
+  external void addFeed();
 
   // Cut command
-  external void addCut(int type);
+  external void addCut(String type);
 
   // Raw command
   external void addCommand(String data);
 
-  // Constants for alignment
-  static const int ALIGN_LEFT = 0;
-  static const int ALIGN_CENTER = 1;
-  static const int ALIGN_RIGHT = 2;
+  // Send the print job
+  external void send();
 
-  // Constants for cut type
-  static const int CUT_NO_FEED = 0;
-  static const int CUT_FEED = 1;
-  static const int CUT_RESERVE = 2;
+  // Clear buffer
+  external void clearCommandBuffer();
 
-  // Constants for font
-  static const int FONT_A = 0;
-  static const int FONT_B = 1;
-  static const int FONT_C = 2;
-  static const int FONT_D = 3;
-  static const int FONT_E = 4;
+  // Alignment constants (string values)
+  external static String get ALIGN_LEFT;
+  external static String get ALIGN_CENTER;
+  external static String get ALIGN_RIGHT;
 
-  // Constants for language
-  static const int LANG_EN = 0;
-  static const int LANG_JA = 1;
-  static const int LANG_ZH_CN = 2;
-  static const int LANG_ZH_TW = 3;
-  static const int LANG_KO = 4;
-  static const int LANG_TH = 5;
-  static const int LANG_VI = 6;
+  // Cut type constants (string values)
+  external static String get CUT_NO_FEED;
+  external static String get CUT_FEED;
+  external static String get CUT_RESERVE;
 
-  // Constants for color
-  static const int COLOR_NONE = 0;
-  static const int COLOR_1 = 1;
-  static const int COLOR_2 = 2;
-  static const int COLOR_3 = 3;
-  static const int COLOR_4 = 4;
+  // Font constants (string values)
+  external static String get FONT_A;
+  external static String get FONT_B;
+  external static String get FONT_C;
+  external static String get FONT_D;
+  external static String get FONT_E;
+
+  // Color constants (string values)
+  external static String get COLOR_NONE;
+  external static String get COLOR_1;
+  external static String get COLOR_2;
+  external static String get COLOR_3;
+  external static String get COLOR_4;
+
+  // Status constants
+  external static int get ASB_NO_RESPONSE;
+  external static int get ASB_PRINT_SUCCESS;
+  external static int get ASB_OFF_LINE;
+  external static int get ASB_COVER_OPEN;
+  external static int get ASB_PAPER_FEED;
 }
 
-/// Epson ePOS Discovery Filter Option
+/// Response object for print operations
 @JS()
 @anonymous
-class DiscoveryFilterOption {
-  external factory DiscoveryFilterOption({
-    int? portType,
-    String? broadcast,
-    int? deviceModel,
-    int? deviceType,
-  });
+class PrintResponse {
+  external bool get success;
+  external String get code;
+  external int get status;
+  external int? get battery;
 
-  external int? get portType;
-  external String? get broadcast;
-  external int? get deviceModel;
-  external int? get deviceType;
-}
-
-/// Epson ePOS Device
-@JS()
-@anonymous
-class EpsonDevice {
-  external int get deviceType;
-  external String get target;
-  external String get deviceName;
-  external String get ipAddress;
-  external String get macAddress;
-  external String get bdAddress;
-
-  external factory EpsonDevice({
-    int deviceType,
-    String target,
-    String deviceName,
-    String ipAddress,
-    String macAddress,
-    String bdAddress,
+  external factory PrintResponse({
+    bool success,
+    String code,
+    int status,
+    int? battery,
   });
 }
 
-/// Epson ePOS Discovery API
-@JS('epson.ePOSDevice.Discovery')
-class EpsonDiscovery {
-  external factory EpsonDiscovery();
-
-  external void start(
-    DiscoveryFilterOption filterOption,
-    Function onDeviceFound,
-    Function onComplete,
-  );
-
-  external void stop();
-
-  // Port type constants
-  static const int PORTTYPE_ALL = 0;
-  static const int PORTTYPE_TCP = 1;
-  static const int PORTTYPE_BLUETOOTH = 2;
-  static const int PORTTYPE_USB = 3;
-
-  // Device type constants
-  static const int DEVTYPE_ALL = 0;
-  static const int DEVTYPE_PRINTER = 1;
-  static const int DEVTYPE_HYBRID_PRINTER = 2;
-  static const int DEVTYPE_DISPLAY = 3;
-  static const int DEVTYPE_KEYBOARD = 4;
-  static const int DEVTYPE_SCANNER = 5;
-  static const int DEVTYPE_SERIAL = 6;
-
-  // Device model constants
-  static const int MODEL_ALL = 0;
-}
-
-/// Printer status object
+/// Status object
 @JS()
 @anonymous
 class PrinterStatus {
@@ -165,46 +177,64 @@ class PrinterStatus {
   external int get autoRecoverErr;
   external int get adapter;
   external int get batteryLevel;
-
-  external factory PrinterStatus({
-    int connection,
-    int online,
-    int coverOpen,
-    int paper,
-    int paperFeed,
-    int panelSwitch,
-    int drawer,
-    int errorStatus,
-    int autoRecoverErr,
-    int adapter,
-    int batteryLevel,
-  });
 }
 
-/// Print response
-@JS()
-@anonymous
-class PrintResponse {
-  external bool get success;
-  external String get code;
-  external int get status;
-  external PrinterStatus? get battery;
-
-  external factory PrintResponse({
-    bool success,
-    String code,
-    int status,
-    PrinterStatus? battery,
-  });
-}
-
-/// Helper to check if ePOS SDK is loaded
+/// Helper to check if Epson SDK is loaded
 @JS('epson')
 external Object? get epsonSDK;
 
 @JS('epson.ePOSDevice')
 external Object? get epsonDevice;
 
-/// Helper function to create a printer with specific series and model
-@JS('epson.ePOSDevice.createDevice')
-external EpsonPrinter? createEpsonPrinter(String deviceId, int target, DiscoveryFilterOption? options, Function? callback);
+/// Helper to access constants
+/// Since we can't directly access static getters in JS interop,
+/// we'll define the constant values here based on the SDK documentation
+class EpsonConstants {
+  // Device types
+  static const int DEVICE_TYPE_PRINTER = 1;
+  static const int DEVICE_TYPE_HYBRID_PRINTER = 2;
+  static const int DEVICE_TYPE_DISPLAY = 3;
+
+  // Alignment (string values used by SDK)
+  static const String ALIGN_LEFT = 'left';
+  static const String ALIGN_CENTER = 'center';
+  static const String ALIGN_RIGHT = 'right';
+
+  // Cut types (string values)
+  static const String CUT_NO_FEED = 'no_feed';
+  static const String CUT_FEED = 'feed';
+  static const String CUT_RESERVE = 'reserve';
+
+  // Font (string values)
+  static const String FONT_A = 'font_a';
+  static const String FONT_B = 'font_b';
+  static const String FONT_C = 'font_c';
+  static const String FONT_D = 'font_d';
+  static const String FONT_E = 'font_e';
+
+  // Color (string values)
+  static const String COLOR_NONE = 'none';
+  static const String COLOR_1 = 'color_1';
+  static const String COLOR_2 = 'color_2';
+  static const String COLOR_3 = 'color_3';
+  static const String COLOR_4 = 'color_4';
+
+  // Status codes
+  static const int ASB_NO_RESPONSE = 1;
+  static const int ASB_PRINT_SUCCESS = 2;
+  static const int ASB_OFF_LINE = 8;
+  static const int ASB_COVER_OPEN = 32;
+  static const int ASB_PAPER_FEED = 64;
+  static const int ASB_RECEIPT_END = 524288;
+  static const int ASB_RECEIPT_NEAR_END = 131072;
+
+  // Return codes
+  static const String OK = 'OK';
+  static const String ERR_PARAM = 'ERR_PARAM';
+  static const String ERR_CONNECT = 'ERR_CONNECT';
+  static const String ERR_TIMEOUT = 'ERR_TIMEOUT';
+  static const String ERR_MEMORY = 'ERR_MEMORY';
+  static const String ERR_ILLEGAL = 'ERR_ILLEGAL';
+  static const String ERR_PROCESSING = 'ERR_PROCESSING';
+  static const String ERR_NOT_FOUND = 'ERR_NOT_FOUND';
+}

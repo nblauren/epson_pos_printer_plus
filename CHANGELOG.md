@@ -1,11 +1,11 @@
 ## 0.0.1
 
 ### Added
-- ✅ **Web Platform Support**: Complete web implementation using Epson ePOS SDK for JavaScript
-  - Full printer discovery via network (TCP/IP)
+- ✅ **Web Platform Support**: Web implementation using Epson ePOS SDK for JavaScript (v2.27.0)
   - All 21 printer command methods implemented
   - Real-time status monitoring
   - Event-based architecture with proper cleanup
+  - Corrected to use actual Epson ePOS JavaScript API
 
 - 🖨️ **Complete Printing API**:
   - Text alignment (left, center, right)
@@ -14,11 +14,6 @@
   - Line spacing and positioning
   - Paper feed and cut commands
   - Raw ESC/POS command support
-
-- 🔍 **Device Discovery**:
-  - Network printer discovery
-  - Filter by port type, device type, and model
-  - Stream-based device discovery API
 
 - 📊 **Status Monitoring**:
   - Real-time printer status updates
@@ -31,20 +26,34 @@
   - Detailed WEB_SETUP.md for web-specific configuration
   - CORS troubleshooting
   - Browser compatibility information
+  - Clear documentation of web limitations
+
+### Fixed
+- **Corrected Web API Implementation**: Rewrote web implementation to match actual Epson ePOS SDK for JavaScript API
+  - Fixed: Now uses `epson.ePOSDevice()` → `connect()` → `createDevice()` flow
+  - Fixed: Removed non-existent Discovery API (web requires manual IP configuration)
+  - Fixed: Proper JavaScript interop with correct method signatures
+  - Fixed: String-based constants for alignment, fonts, colors, cut types
 
 ### Platform Support
-- iOS: Native Epson ePOS SDK
-- Android: Native Epson ePOS SDK
-- Web: Epson ePOS SDK for JavaScript (v2.27.0)
+- iOS: Native Epson ePOS SDK (with discovery)
+- Android: Native Epson ePOS SDK (with discovery)
+- Web: Epson ePOS SDK for JavaScript (v2.27.0) - **NO discovery, manual IP required**
 
 ### Technical Details
-- JavaScript interop layer with @JS annotations
-- Proper async/await support for all platforms
-- Event-based status monitoring
+- JavaScript interop layer with @JS annotations matching real SDK API
+- Proper async/await support using JavaScript callbacks
+- Event-based status monitoring via onstatuschange callback
 - Automatic SDK loading for web
-- Clean resource management
+- Clean resource management with ePOSDevice lifecycle
 
-### Notes
-- Web platform requires network-connected printers (TCP/IP)
-- Bluetooth and USB not supported on web (browser limitations)
+### Web Platform Limitations
+- ❌ **NO automatic printer discovery** - requires known IP address
+- ❌ Bluetooth not supported (browser limitation)
+- ❌ USB not supported (browser limitation)
+- ✅ TCP/IP network printers only (IP:port connection)
+- ⚠️ CORS configuration may be required
 - Tested on Chrome 90+, Firefox 88+, Safari 14+, Edge 90+
+
+### Breaking Changes
+- Web: Discovery will return `NOT_SUPPORTED` error - applications must provide UI for manual IP entry

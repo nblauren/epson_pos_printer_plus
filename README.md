@@ -22,7 +22,7 @@ A Flutter plugin to connect to and print from Epson POS printers using the Epson
 |----------|-----------|-----------|--------|-----|
 | **iOS** | ✅ | ✅ | ✅ | ❌ |
 | **Android** | ✅ | ✅ | ✅ | ✅ |
-| **Web** | ✅ (network only) | ❌ | ✅ | ❌ |
+| **Web** | ❌ (manual IP required) | ❌ | ✅ | ❌ |
 
 ## Installation
 
@@ -93,16 +93,26 @@ The web platform uses the Epson ePOS SDK for JavaScript to enable printing from 
 - ✅ Works with network-connected printers (TCP/IP)
 - ✅ All printing features supported
 - ❌ Bluetooth/USB not available in browsers
+- ❌ **NO automatic printer discovery** - requires known IP address
 - ⚠️ Requires same network connectivity
 
 ### Web-Specific Example
 
 ```dart
-// Web printing works the same as mobile, but use TCP/IP
+// WEB LIMITATION: No discovery! Must use known IP address
+// Provide UI for users to enter printer IP manually
+
 await printer.connect(
-  target: '192.168.1.100',  // Printer IP address
+  target: '192.168.1.100',  // User must know printer IP
   timeout: const Duration(seconds: 15),
 );
+
+// Discovery will fail on web with NOT_SUPPORTED error
+try {
+  final devices = await discoverEpos2Devices(...).toList();
+} catch (e) {
+  // On web, catch NOT_SUPPORTED and prompt user for IP
+}
 ```
 
 ### Browser Requirements
