@@ -1,10 +1,9 @@
-// web/epson_pos_printer_web.dart
+// lib/epson_pos_printer_web.dart
 import 'dart:html' as html;
-import 'dart:js_util' as js_util;
 import 'package:flutter/services.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
-import 'src/discovery_manager_web.dart';
-import 'src/printer_manager_web.dart';
+import '../web/src/discovery_manager_web.dart';
+import '../web/src/printer_manager_web.dart';
 
 class EpsonPosPrinterWeb {
   static void registerWith(Registrar registrar) {
